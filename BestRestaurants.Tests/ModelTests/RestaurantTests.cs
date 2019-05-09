@@ -57,5 +57,61 @@ namespace BestRestaurants.TestTools
       Console.WriteLine("this line " +newList[0].GetCuisineId() + " " + result[0].GetCuisineId());
       CollectionAssert.AreEqual(newList, result);
     }
+
+    [TestMethod]
+    public void Find_ReturnsCorrectRestaurantFromDatabase_Restaurant()
+    {
+      Restaurant testRestaurant = new Restaurant("Burger King", 1);
+      testRestaurant.Save();
+      Restaurant foundRestaurant = Restaurant.Find(testRestaurant.GetId());
+      Assert.AreEqual(testRestaurant, foundRestaurant);
+    }
+
+    [TestMethod]
+    public void Equals_ReturnsTrueIfNamesAreTheSame_Restaurant()
+    {
+      Restaurant firstRestaurant = new Restaurant("Chipotle", 1);
+      Restaurant secondRestaurant = new Restaurant("Chipotle", 1);
+      Assert.AreEqual(firstRestaurant, secondRestaurant);
+    }
+
+    [TestMethod]
+    public void Save_SavesToDatabase_RestaurantList()
+    {
+      Restaurant testRestaurant = new Restaurant("Chipotle", 1);
+      testRestaurant.Save();
+      List<Restaurant> result = Restaurant.GetAll();
+      List<Restaurant> testList = new List<Restaurant>{testRestaurant};
+      CollectionAssert.AreEqual(testList, result);
+    }
+
+    [TestMethod]
+    public void Save_AssignsIdToObject_Id()
+    {
+      //Arrange
+      Restaurant testRestaurant = new Restaurant("Chipotle", 1);
+
+      //Act
+      testRestaurant.Save();
+      Restaurant savedRestaurant = Restaurant.GetAll()[0];
+
+      int result = savedRestaurant.GetId();
+      int testId = testRestaurant.GetId();
+
+      //Assert
+      Assert.AreEqual(testId, result);
+    }
+
+    [TestMethod]
+    public void Edit_UpdatesRestaurantInDatabase_String()
+    {
+      //Arrange
+      Restaurant testRestaurant = new Restaurant("Chipotle", 1);
+      testRestaurant.Save();
+      string secondName = "Panda Express";
+      testRestaurant.Edit(secondName);
+      string result = Restaurant.Find(testRestaurant.GetId()).GetName();
+      Assert.AreEqual(secondName, result);
+    }
   }
 }
